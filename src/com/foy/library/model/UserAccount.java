@@ -8,7 +8,7 @@ public class UserAccount {
     private String password;
     private Long personId;
     private int maxBookLimit = 5;
-    private Set<String> borrowedBooks;
+    private Set<Long> borrowedBooks;
 
     //constructor
     public UserAccount(String userName, String password, Long personId) {
@@ -51,11 +51,11 @@ public class UserAccount {
         this.maxBookLimit = maxBookLimit;
     }
 
-    public Set<String> getBorrowedBooks() {
+    public Set<Long> getBorrowedBooks() {
         return borrowedBooks;
     }
 
-    public void setBorrowedBooks(Set<String> borrowedBooks) {
+    public void setBorrowedBooks(Set<Long> borrowedBooks) {
         this.borrowedBooks = borrowedBooks;
     }
 
@@ -64,11 +64,11 @@ public class UserAccount {
         return borrowedBooks.size() < maxBookLimit;
     }
 
-    public void borrowBook(String book) {
+    public void borrowBook(Long book) {
         borrowedBooks.add(book);
     }
 
-    public void returnBook(String book) {
+    public void returnBook(Long book) {
         borrowedBooks.remove(book);
     }
 }
