@@ -2,17 +2,15 @@ package com.foy.library.service;
 
 import com.foy.library.enums.BookStatus;
 import com.foy.library.enums.Category;
-import com.foy.library.model.Book;
-import com.foy.library.model.Invoice;
-import com.foy.library.model.Person;
-import com.foy.library.model.UserAccount;
+import com.foy.library.enums.User;
+import com.foy.library.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Library {
+public class Library implements Billable {
     private Map<Long, Book> books;
     private Map<Long, Person> users;
     private Map<String, UserAccount> accounts;
@@ -25,8 +23,15 @@ public class Library {
         this.invoices = new ArrayList<>();
     }
 
-    public void addBook(Book book) {
+    public boolean addBook(String userName, Book book) {
+        UserAccount user = accounts.get(userName);
+        if (user == null || user.getUser() != User.LIBRARIAN) {
+            System.out.println("Only librarians can add books!");
+            return false;
+        }
         books.put(book.getBookId(), book);
+        System.out.println("Book added successfully!");
+        return true;
     }
 
     public Book findBookById(Long bookId) {
@@ -63,18 +68,34 @@ public class Library {
         return result;
     }
 
-    public void updateBook(Long bookId, String newTitle, String newAuthor, Category newCategory, double newPrice) {
-        Book book = books.get(bookId);
-        if (book != null) {
-            book.setTitle(newTitle);
-            book.setAuthor(newAuthor);
-            book.setCategory(newCategory);
-            book.setPrice(newPrice);
+    public boolean updateBook(String userName, Long bookId, String newTitle, String newAuthor, Category newCategory, double newPrice) {
+        UserAccount user = accounts.get(userName);
+        if (user == null || user.getUser() != User.LIBRARIAN) {
+            System.out.println("Only librarians can update books!");
+            return false;
         }
+        Book book = books.get(bookId);
+        if (book == null) {
+            System.out.println("Book not found");
+            return false;
+        }
+        book.setTitle(newTitle);
+        book.setAuthor(newAuthor);
+        book.setCategory(newCategory);
+        book.setPrice(newPrice);
+        System.out.println("Book updated successfully!");
+        return true;
     }
 
-    public void deleteBook(Long bookId) {
+    public boolean deleteBook(String userName, Long bookId) {
+        UserAccount user = accounts.get(userName);
+        if (user == null || user.getUser() != User.LIBRARIAN) {
+            System.out.println("Only librarians can remove books!");
+            return false;
+        }
         books.remove(bookId);
+        System.out.println("Book removed successfully!");
+        return true;
     }
 
     //-------------------------------------------------------------------------------
@@ -159,6 +180,24 @@ public class Library {
         return false;
     }
 
+    @Override
+    public Invoice newInvoice(Long userId, Long bookId, double amount) {
+        Long invoiceId = generateInvoiceId();
+        Invoice invoice = new Invoice(invoiceId, userId, bookId, amount);
+        invoices.add(invoice);
+        return invoice;
+    }
+
+    @Override
+    public boolean refund(Long userId, Long bookId) {
+        for (Invoice invoice: invoices) {
+            if (invoice.getUserId().equals(userId) && invoice.getBookId().equals(bookId) && !invoice.isRefunded()) {
+                invoice.refund();
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 

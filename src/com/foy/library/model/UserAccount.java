@@ -1,5 +1,7 @@
 package com.foy.library.model;
 
+import com.foy.library.enums.User;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,14 +9,17 @@ public class UserAccount {
     private String userName;
     private String password;
     private Long personId;
+    private User user;
+
     private int maxBookLimit = 5;
     private Set<Long> borrowedBooks;
 
     //constructor
-    public UserAccount(String userName, String password, Long personId) {
+    public UserAccount(String userName, String password, Long personId, User user) {
         this.userName = userName;
         this.password = password;
         this.personId = personId;
+        this.user = user;
         this.borrowedBooks = new HashSet<>();
     }
 
@@ -41,6 +46,14 @@ public class UserAccount {
 
     public void setPersonId(Long personId) {
         this.personId = personId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getMaxBookLimit() {
@@ -70,5 +83,9 @@ public class UserAccount {
 
     public void returnBook(Long book) {
         borrowedBooks.remove(book);
+    }
+
+    public boolean authenticate(String password) {
+        return this.password.equals(password);
     }
 }
