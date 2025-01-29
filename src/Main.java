@@ -3,6 +3,7 @@ import com.foy.library.model.*;
 import com.foy.library.service.Library;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Main {
@@ -77,7 +78,7 @@ public class Main {
         scanner.nextLine();
         System.out.print("Enter Category [STUDYBOOK, MAGAZINE, JOURNAL]: ");
         String catStr = scanner.nextLine();
-        Category category = Category.valueOf(catStr.toUpperCase());
+        Category category = Category.valueOf(catStr.toUpperCase(Locale.ENGLISH));
 
         Book book = new Book(id, title, author, category, price);
         library.addBook(book);
