@@ -1,5 +1,5 @@
 import com.foy.library.enums.Category;
-import com.foy.library.enums.User;
+import com.foy.library.enums.UserRole;
 import com.foy.library.model.*;
 import com.foy.library.service.Library;
 
@@ -14,27 +14,34 @@ public class Main {
 
     public static void main(String[] args) {
 
+        //öğrenci yarat
         Person student1 = new Student(100L, "Furkan", "555-555-55-55");
         library.addPerson(student1);
 
-        UserAccount studentAcc1 = new UserAccount("frkn", "1234", 100L, User.STUDENT);
+        //öğrenci hesabı yarat
+        UserAccount studentAcc1 = new UserAccount("frkn", "1234", 100L, UserRole.STUDENT);
         library.addUserAccount(studentAcc1);
 
 
+        //kütüphaneci yarat
         Librarian librarian = new Librarian(10L, "Librarian Brian", "666-666-66-66");
         library.addPerson(librarian);
 
-        UserAccount librarianAcc = new UserAccount("lib","2323", 10L, User.LIBRARIAN);
+        //kütüphaneci hesabı yarat
+        UserAccount librarianAcc = new UserAccount("lib","2323", 10L, UserRole.LIBRARIAN);
         library.addUserAccount(librarianAcc);
 
 
+        //eğitmen yarat
         Person facultyMember1 = new FacultyMember(1L, "Dr. Ozan", "444-444-44-44");
         library.addPerson(facultyMember1);
 
-        UserAccount facMemAcc1 = new UserAccount("dr-ozn", "4321", 1L, User.FACULTY_MEMBER);
+        //eğitmen hesabı yarat
+        UserAccount facMemAcc1 = new UserAccount("dr-ozn", "4321", 1L, UserRole.FACULTY_MEMBER);
         library.addUserAccount(facMemAcc1);
 
 
+        //örnek kitaplar ekle
         Book book1 = new Book(1001L, "Harry Potter 1", "J. K. Rowling", Category.FANTASY, 100);
         library.addBook("lib", book1);
 
@@ -74,6 +81,7 @@ public class Main {
 
     }
 
+    //kullanıcı giriş menüsü
     private static void userMenu() {
         System.out.println("\n[User Login]");
         System.out.print("Enter username: ");
@@ -83,7 +91,7 @@ public class Main {
 
         UserAccount account = library.getAccountByUserName(username);
         if (account == null || !account.authenticate(password)) {
-            System.out.println("ERROR: Invalid username or password.");
+            System.out.println("Invalid username or password!");
             return;
         }
 
@@ -129,6 +137,7 @@ public class Main {
         }
     }
 
+    //kütüphaneci giriş menüsü
     private static void librarianMenu() {
         System.out.println("\n[Librarian Login]");
         System.out.print("Enter librarian username: ");
@@ -137,8 +146,8 @@ public class Main {
         String password = scanner.nextLine();
 
         UserAccount account = library.getAccountByUserName(username);
-        if (account == null || !account.authenticate(password) || account.getUser() != User.LIBRARIAN) {
-            System.out.println("ERROR: Not a valid librarian account!");
+        if (account == null || !account.authenticate(password) || account.getUser() != UserRole.LIBRARIAN) {
+            System.out.println("Not a valid librarian account!");
             return;
         }
 
@@ -188,9 +197,9 @@ public class Main {
         }
     }
 
-    // ------------------ Librarian Menus ------------------
+    // kütüphaneciye özel menüler
     private static void addBookMenu(String librarianUsername) {
-        System.out.print("Enter Book ID: ");
+        System.out.print("Enter Book Id: ");
         Long id = Long.parseLong(scanner.nextLine());
         System.out.print("Enter Title: ");
         String title = scanner.nextLine();
@@ -199,7 +208,7 @@ public class Main {
         System.out.print("Enter Price: ");
         double price = scanner.nextDouble();
         scanner.nextLine();
-        System.out.print("Enter Category [STUDYBOOK, MAGAZINE, JOURNAL]: ");
+        System.out.print("Enter Category [STUDY_BOOK, MAGAZINE, JOURNAL, COMIC_BOOK, FANTASY]: ");
         String catStr = scanner.nextLine();
 
         Category cat = Category.valueOf(catStr.toUpperCase(Locale.ENGLISH));
@@ -208,11 +217,11 @@ public class Main {
     }
 
     private static void updateBookMenu(String librarianUsername) {
-        System.out.print("Enter Book ID to update: ");
+        System.out.print("Enter Book Id to update: ");
         Long bookId = Long.parseLong(scanner.nextLine());
         Book book = library.findBookById(bookId);
         if (book == null) {
-            System.out.println("No book found with ID: " + bookId);
+            System.out.println("No book found with Id: " + bookId);
             return;
         }
         System.out.print("New Title: ");
@@ -222,33 +231,33 @@ public class Main {
         System.out.print("New Price: ");
         double newPrice = scanner.nextDouble();
         scanner.nextLine();
-        System.out.print("New Category [STUDYBOOK, MAGAZINE, JOURNAL]: ");
+        System.out.print("New Category [STUDY_BOOK, MAGAZINE, JOURNAL, COMIC_BOOK, FANTASY]: ");
         String catStr = scanner.nextLine();
         Category newCat = Category.valueOf(catStr.toUpperCase(Locale.ENGLISH));
         library.updateBook(librarianUsername, bookId, newTitle, newAuthor, newCat, newPrice);
     }
 
     private static void deleteBookMenu(String librarianUsername) {
-        System.out.print("Enter Book ID to delete: ");
+        System.out.print("Enter Book Id to delete: ");
         Long bookId = Long.parseLong(scanner.nextLine());
         library.deleteBook(librarianUsername, bookId);
     }
 
-    // ------------------ Common Menus ---------------------
+    // kütüphaneci ve kullanıcı ortak menüleri
     private static void borrowBookMenu(String username) {
-        System.out.print("Enter Book ID: ");
+        System.out.print("Enter Book Id: ");
         Long bookId = Long.parseLong(scanner.nextLine());
         library.borrowBook(username, bookId);
     }
 
     private static void returnBookMenu(String username) {
-        System.out.print("Enter Book ID: ");
+        System.out.print("Enter Book Id: ");
         Long bookId = Long.parseLong(scanner.nextLine());
         library.returnBook(username, bookId);
     }
 
     private static void findBookByIdMenu() {
-        System.out.print("Enter Book ID: ");
+        System.out.print("Enter Book Id: ");
         Long bookId = Long.parseLong(scanner.nextLine());
         Book b = library.findBookById(bookId);
         if (b != null) {
@@ -285,7 +294,7 @@ public class Main {
     }
 
     private static void listBooksByCategoryMenu() {
-        System.out.print("Enter Category [STUDYBOOK, MAGAZINE, JOURNAL]: ");
+        System.out.print("Enter Category [STUDY_BOOK, MAGAZINE, JOURNAL, COMIC_BOOK, FANTASY]: ");
         String catStr = scanner.nextLine();
         Category category = Category.valueOf(catStr.toUpperCase(Locale.ENGLISH));
         List<Book> books = library.listBooksByCategory(category);

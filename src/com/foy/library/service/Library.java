@@ -2,7 +2,7 @@ package com.foy.library.service;
 
 import com.foy.library.enums.BookStatus;
 import com.foy.library.enums.Category;
-import com.foy.library.enums.User;
+import com.foy.library.enums.UserRole;
 import com.foy.library.model.*;
 
 import java.util.ArrayList;
@@ -25,8 +25,12 @@ public class Library implements Billable {
 
     public boolean addBook(String userName, Book book) {
         UserAccount user = accounts.get(userName);
-        if (user == null || user.getUser() != User.LIBRARIAN) {
+        if (user == null || user.getUser() != UserRole.LIBRARIAN) {
             System.out.println("Only librarians can add books!");
+            return false;
+        }
+        if (books.containsKey(book.getBookId())) {
+            System.out.println("A book with Id: " + book.getBookId() + " already exists!");
             return false;
         }
         books.put(book.getBookId(), book);
@@ -70,7 +74,7 @@ public class Library implements Billable {
 
     public boolean updateBook(String userName, Long bookId, String newTitle, String newAuthor, Category newCategory, double newPrice) {
         UserAccount user = accounts.get(userName);
-        if (user == null || user.getUser() != User.LIBRARIAN) {
+        if (user == null || user.getUser() != UserRole.LIBRARIAN) {
             System.out.println("Only librarians can update books!");
             return false;
         }
@@ -89,8 +93,12 @@ public class Library implements Billable {
 
     public boolean deleteBook(String userName, Long bookId) {
         UserAccount user = accounts.get(userName);
-        if (user == null || user.getUser() != User.LIBRARIAN) {
+        if (user == null || user.getUser() != UserRole.LIBRARIAN) {
             System.out.println("Only librarians can remove books!");
+            return false;
+        }
+        if (!books.containsKey(bookId)) {
+            System.out.println("No book found with Id: " + bookId);
             return false;
         }
         books.remove(bookId);
@@ -106,10 +114,6 @@ public class Library implements Billable {
 
     public void addUserAccount(UserAccount account) {
         accounts.put(account.getUserName(), account);
-    }
-
-    public Person getPersonById(Long personId) {
-        return users.get(personId);
     }
 
     public UserAccount getAccountByUserName(String userName) {
@@ -181,9 +185,9 @@ public class Library implements Billable {
     }
 
     @Override
-    public Invoice newInvoice(Long userId, Long bookId, double amount) {
+    public Invoice newInvoice(Long userId, Long bookId, double price) {
         Long invoiceId = generateInvoiceId();
-        Invoice invoice = new Invoice(invoiceId, userId, bookId, amount);
+        Invoice invoice = new Invoice(invoiceId, userId, bookId, price);
         invoices.add(invoice);
         return invoice;
     }

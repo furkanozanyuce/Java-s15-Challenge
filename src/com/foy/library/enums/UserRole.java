@@ -1,6 +1,6 @@
 package com.foy.library.enums;
 
-public enum User {
+public enum UserRole {
     STUDENT,
     FACULTY_MEMBER,
     LIBRARIAN

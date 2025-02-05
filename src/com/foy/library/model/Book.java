@@ -24,10 +24,6 @@ public class Book {
         return bookId;
     }
 
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -69,7 +65,6 @@ public class Book {
     }
 
     public void display() {
-        System.out.println("[Book ID: " + bookId + "] " + title + " by " + author
-                + " - " + category + " (" + bookStatus + ")");
+        System.out.println("[Book ID: " + bookId + "] " + title + " by " + author + " - " + category + " (" + bookStatus + ")");
     }
 }

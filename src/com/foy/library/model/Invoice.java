@@ -4,56 +4,29 @@ public class Invoice {
     private Long invoiceId;
     private Long userId;
     private Long bookId;
-    private double amount;
+    private double price;
     private boolean isRefunded;
 
     //constructor
-    public Invoice(Long invoiceId, Long userId, Long bookId, double amount) {
+    public Invoice(Long invoiceId, Long userId, Long bookId, double price) {
         this.invoiceId = invoiceId;
         this.userId = userId;
         this.bookId = bookId;
-        this.amount = amount;
+        this.price = price;
         this.isRefunded = false;
     }
 
-    public Long getInvoiceId() {
-        return invoiceId;
-    }
-
-    public void setInvoiceId(Long invoiceId) {
-        this.invoiceId = invoiceId;
-    }
 
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Long getBookId() {
         return bookId;
     }
 
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
     public boolean isRefunded() {
         return isRefunded;
-    }
-
-    public void setRefunded(boolean refunded) {
-        isRefunded = refunded;
     }
 
     //method
@@ -63,6 +36,6 @@ public class Invoice {
 
     @Override
     public String toString() {
-        return "Invoice[" + invoiceId + " for User=" + userId + ", Book=" + bookId + ", amount=" + amount + ", isRefunded=" + isRefunded + "]";
+        return "Invoice:[Invoice Id " + invoiceId + " for User Id=" + userId + ", Book Id=" + bookId + ", Price=" + price + ", isRefunded=" + isRefunded + "]";
     }
 }
